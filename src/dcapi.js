@@ -98,8 +98,9 @@ define("dcApi", ["defer", "loadJson"],
                                  */
                                 data[i].city = data[i].cityAndState;
                                 if (data[i].partnerName) {
-                                    partner = data[i].partnerName.split(" ");
-                                    data[i].parnterFirstName = partner[0];
+                                    //удалить двойные пробелы сначала
+                                    partner = data[i].partnerName.replace(/ +(?= )/g, '').split(" ");
+                                    data[i].parnterFirstName = partner[1];
                                     data[i].parnterLastName = partner[1] || "";
                                 }
                             }
@@ -136,7 +137,8 @@ define("dcApi", ["defer", "loadJson"],
                              * @property participantName
                              * @property partnerCity
                              */
-                            names = data[i].participantName.split(" ");
+                            //удалить двойные пробелы сначала
+                            names = data[i].participantName.replace(/ +(?= )/g, '').split(" ");
                             data[i].firstName = names[0];
                             data[i].lastName = names[1] || "";
                             data[i].city = data[i].cityAndState;

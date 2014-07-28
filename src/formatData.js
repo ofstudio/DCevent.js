@@ -15,11 +15,10 @@
 define("formatData", [], function () {
     "use strict";
 
-    return function (data) {
+    return function (data, formatHook) {
         var result = "",
             s = [],
             i = data.length;
-
         while (i--) {
             s.unshift(data[i].lastName + " " + data[i].firstName);
             if (data[i].city) { s[0] = s[0] + ", " + data[i].city; }
@@ -30,6 +29,9 @@ define("formatData", [], function () {
                  * @property partnerCity
                  */
                 if (data[i].partnerCity) { s[0] = s[0] + ", " + data[i].partnerCity; }
+            }
+            if (formatHook) {
+                s[0] = formatHook(s[0]);
             }
         }
 
