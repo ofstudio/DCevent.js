@@ -37,6 +37,6 @@
 define(["dcApi"], function (dcApi) {
 
     var api = dcApi("88070","https://danceconvention.net/eventdirector/rest/");
-    api.getEventSignups(function (data) { console.log(data); });
+    api.getContestSignups("Open Strictly Swing", "couples",function (data) { console.log(data); });
 
 });

@@ -321,7 +321,7 @@ var defer, ieVersion, loadJson, dcApi, tests_test;
                             if (data[i].partnerName) {
                                 //удалить двойные пробелы сначала
                                 partner = data[i].partnerName.replace(/ +(?= )/g, '').split(' ');
-                                data[i].parnterFirstName = partner[1];
+                                data[i].parnterFirstName = partner[0];
                                 data[i].parnterLastName = partner[1] || '';
                             }
                         }
@@ -430,7 +430,7 @@ var defer, ieVersion, loadJson, dcApi, tests_test;
     //});
     tests_test = function (dcApi) {
         var api = dcApi('88070', 'https://danceconvention.net/eventdirector/rest/');
-        api.getEventSignups(function (data) {
+        api.getContestSignups('Open Strictly Swing', 'couples', function (data) {
             console.log(data);
         });
     }(dcApi);

@@ -100,7 +100,7 @@ define("dcApi", ["defer", "loadJson"],
                                 if (data[i].partnerName) {
                                     //удалить двойные пробелы сначала
                                     partner = data[i].partnerName.replace(/ +(?= )/g, '').split(" ");
-                                    data[i].parnterFirstName = partner[1];
+                                    data[i].parnterFirstName = partner[0];
                                     data[i].parnterLastName = partner[1] || "";
                                 }
                             }
