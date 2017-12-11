@@ -1,6 +1,6 @@
 {
   "name": "DCEvent.js",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Browser-side implementation of danceconvention.net API",
   "author": {
     "name": "Oleg Fomin",

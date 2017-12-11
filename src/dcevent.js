@@ -11,11 +11,11 @@
  * (Internet Explorer 8 and 9 will work only if your site runs over https
  * due to restrictions in CORS implementation in IE8 and IE9)
  *
- * Copyright (c) 2014 Oleg Fomin <ofstudio@gmail.com>
+ * Copyright (c) 2014-2018 Oleg Fomin <ofstudio@gmail.com>
  * Released under the MIT license
  *
  * @author Oleg Fomin <ofstudio@gmail.com>
- * @version 0.0.2
+ * @version 0.0.3
  */
 
 
@@ -31,6 +31,8 @@ define(["dcApi", "formatData"], function (dcApi, formatData) {
         globalFormatHookFunc,
         eventsApi = {},
         apiBaseUrl = "https://danceconvention.net/eventdirector/rest/",
+        lang = null,
+        langContainer = document.querySelector("script[data-dcevent-lang]"),
         apiUrlContainer = document.querySelector("script[data-dcevent-api]"),
         containers = document.querySelectorAll("[data-dcevent]"),
         i = containers.length,
@@ -41,6 +43,7 @@ define(["dcApi", "formatData"], function (dcApi, formatData) {
         };
 
     if (apiUrlContainer) { apiBaseUrl = apiUrlContainer.getAttribute("data-dcevent-api"); }
+    if (langContainer) {lang = langContainer.getAttribute("data-dcevent-lang"); }
 
     if (globalFormatHookContainer) {
         globalFormatHookFunc = eval(globalFormatHookContainer.getAttribute("data-format-hook"));
@@ -63,7 +66,7 @@ define(["dcApi", "formatData"], function (dcApi, formatData) {
                 }
             }
 
-            if (!eventsApi[id]) { eventsApi[id] = dcApi(id, apiBaseUrl); }
+            if (!eventsApi[id]) { eventsApi[id] = dcApi(id, apiBaseUrl, lang); }
 
             if (contest && select) { // contest signups case
                 eventsApi[id].getContestSignups(contest, select, output(containers[i], formatHookFunc));
@@ -80,7 +83,7 @@ define(["dcApi", "formatData"], function (dcApi, formatData) {
             if (url === undefined) { url = apiBaseUrl; }
             return dcApi(id, url);
         },
-        version: "0.0.1",
+        version: "0.0.3",
         apiBaseUrl: apiBaseUrl
     };
 

@@ -9,6 +9,7 @@
  *
  * eventId - (String) ID of event
  * apiBaseUrl - (String) URL of danceconvention.net API
+ * lang - (String) (optional) language code
  *
  * Requires:
  *      defer function
@@ -36,8 +37,10 @@
 define("dcApi", ["defer", "loadJson"],
     function (defer, loadJSON) {
         "use strict";
-        return function (id, apiBaseUrl) {
+        return function (id, apiBaseUrl, lang) {
             var requests, requestEventContests, requestContestSignups, requestEventSignups;
+
+            lang = lang ? '?lang=' + lang : '';
 
             requests = {
                 contestSignups: {},
@@ -52,7 +55,7 @@ define("dcApi", ["defer", "loadJson"],
              */
             requestEventContests = function () {
                 var d = defer(),
-                    url = apiBaseUrl + "eventinfo/" + id.toString() + "/contests";
+                    url = apiBaseUrl + "eventinfo/" + id.toString() + "/contests" + lang;
                 loadJSON(url,
                     function (data) {
                         var contests = {}, i = data.length;
@@ -85,7 +88,7 @@ define("dcApi", ["defer", "loadJson"],
                         return;
                     }
 
-                    var url = apiBaseUrl + "eventinfo/signups/" + contests[contest].id + "/" + select;
+                    var url = apiBaseUrl + "eventinfo/signups/" + contests[contest].id + "/" + select + lang;
                     loadJSON(url,
                         function (data) {
                             var partner,
@@ -125,7 +128,7 @@ define("dcApi", ["defer", "loadJson"],
              */
             requestEventSignups = function () {
                 var d = defer(),
-                    url = apiBaseUrl + "eventinfo/" + id.toString() + "/signups";
+                    url = apiBaseUrl + "eventinfo/" + id.toString() + "/signups" + lang;
 
                 loadJSON(url,
                     function (data) {

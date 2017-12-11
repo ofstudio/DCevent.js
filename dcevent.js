@@ -240,6 +240,7 @@ var defer, ieVersion, loadJson, dcApi, formatData, dcevent;
      *
      * eventId - (String) ID of event
      * apiBaseUrl - (String) URL of danceconvention.net API
+     * lang - (String) (optional) language code
      *
      * Requires:
      *      defer function
@@ -266,8 +267,9 @@ var defer, ieVersion, loadJson, dcApi, formatData, dcevent;
      */
     dcApi = function (defer, loadJSON) {
         'use strict';
-        return function (id, apiBaseUrl) {
+        return function (id, apiBaseUrl, lang) {
             var requests, requestEventContests, requestContestSignups, requestEventSignups;
+            lang = lang ? '?lang=' + lang : '';
             requests = {
                 contestSignups: {},
                 eventSignups: undefined,
@@ -279,7 +281,7 @@ var defer, ieVersion, loadJson, dcApi, formatData, dcevent;
              * @returns Promise Object
              */
             requestEventContests = function () {
-                var d = defer(), url = apiBaseUrl + 'eventinfo/' + id.toString() + '/contests';
+                var d = defer(), url = apiBaseUrl + 'eventinfo/' + id.toString() + '/contests' + lang;
                 loadJSON(url, function (data) {
                     var contests = {}, i = data.length;
                     while (i--) {
@@ -308,7 +310,7 @@ var defer, ieVersion, loadJson, dcApi, formatData, dcevent;
                         d.reject('No such contest: ' + contest);
                         return;
                     }
-                    var url = apiBaseUrl + 'eventinfo/signups/' + contests[contest].id + '/' + select;
+                    var url = apiBaseUrl + 'eventinfo/signups/' + contests[contest].id + '/' + select + lang;
                     loadJSON(url, function (data) {
                         var partner, i = data.length;
                         while (i--) {
@@ -341,7 +343,7 @@ var defer, ieVersion, loadJson, dcApi, formatData, dcevent;
              * @returns Promise Object
              */
             requestEventSignups = function () {
-                var d = defer(), url = apiBaseUrl + 'eventinfo/' + id.toString() + '/signups';
+                var d = defer(), url = apiBaseUrl + 'eventinfo/' + id.toString() + '/signups' + lang;
                 loadJSON(url, function (data) {
                     var names, i = data.length;
                     while (i--) {
@@ -449,21 +451,24 @@ var defer, ieVersion, loadJson, dcApi, formatData, dcevent;
      * (Internet Explorer 8 and 9 will work only if your site runs over https
      * due to restrictions in CORS implementation in IE8 and IE9)
      *
-     * Copyright (c) 2014 Oleg Fomin <ofstudio@gmail.com>
+     * Copyright (c) 2014-2018 Oleg Fomin <ofstudio@gmail.com>
      * Released under the MIT license
      *
      * @author Oleg Fomin <ofstudio@gmail.com>
-     * @version 0.0.2
+     * @version 0.0.3
      */
     dcevent = function (dcApi, formatData) {
         'use strict';
-        var id, contest, select, formatHook, formatHookFunc, globalFormatHookContainer = document.querySelector('script[data-format-hook]'), globalFormatHookFunc, eventsApi = {}, apiBaseUrl = 'https://danceconvention.net/eventdirector/rest/', apiUrlContainer = document.querySelector('script[data-dcevent-api]'), containers = document.querySelectorAll('[data-dcevent]'), i = containers.length, output = function (container, hook) {
+        var id, contest, select, formatHook, formatHookFunc, globalFormatHookContainer = document.querySelector('script[data-format-hook]'), globalFormatHookFunc, eventsApi = {}, apiBaseUrl = 'https://danceconvention.net/eventdirector/rest/', lang = null, langContainer = document.querySelector('script[data-dcevent-lang]'), apiUrlContainer = document.querySelector('script[data-dcevent-api]'), containers = document.querySelectorAll('[data-dcevent]'), i = containers.length, output = function (container, hook) {
                 return function (data) {
                     container.innerHTML = formatData(data, hook);
                 };
             };
         if (apiUrlContainer) {
             apiBaseUrl = apiUrlContainer.getAttribute('data-dcevent-api');
+        }
+        if (langContainer) {
+            lang = langContainer.getAttribute('data-dcevent-lang');
         }
         if (globalFormatHookContainer) {
             globalFormatHookFunc = eval(globalFormatHookContainer.getAttribute('data-format-hook'));
@@ -484,7 +489,7 @@ var defer, ieVersion, loadJson, dcApi, formatData, dcevent;
                     }
                 }
                 if (!eventsApi[id]) {
-                    eventsApi[id] = dcApi(id, apiBaseUrl);
+                    eventsApi[id] = dcApi(id, apiBaseUrl, lang);
                 }
                 if (contest && select) {
                     // contest signups case
@@ -503,7 +508,7 @@ var defer, ieVersion, loadJson, dcApi, formatData, dcevent;
                 }
                 return dcApi(id, url);
             },
-            version: '0.0.1',
+            version: '0.0.3',
             apiBaseUrl: apiBaseUrl
         };
     }(dcApi, formatData);

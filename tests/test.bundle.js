@@ -240,6 +240,7 @@ var defer, ieVersion, loadJson, dcApi, tests_test;
      *
      * eventId - (String) ID of event
      * apiBaseUrl - (String) URL of danceconvention.net API
+     * lang - (String) (optional) language code
      *
      * Requires:
      *      defer function
@@ -266,8 +267,9 @@ var defer, ieVersion, loadJson, dcApi, tests_test;
      */
     dcApi = function (defer, loadJSON) {
         'use strict';
-        return function (id, apiBaseUrl) {
+        return function (id, apiBaseUrl, lang) {
             var requests, requestEventContests, requestContestSignups, requestEventSignups;
+            lang = lang ? '?lang=' + lang : '';
             requests = {
                 contestSignups: {},
                 eventSignups: undefined,
@@ -279,7 +281,7 @@ var defer, ieVersion, loadJson, dcApi, tests_test;
              * @returns Promise Object
              */
             requestEventContests = function () {
-                var d = defer(), url = apiBaseUrl + 'eventinfo/' + id.toString() + '/contests';
+                var d = defer(), url = apiBaseUrl + 'eventinfo/' + id.toString() + '/contests' + lang;
                 loadJSON(url, function (data) {
                     var contests = {}, i = data.length;
                     while (i--) {
@@ -308,7 +310,7 @@ var defer, ieVersion, loadJson, dcApi, tests_test;
                         d.reject('No such contest: ' + contest);
                         return;
                     }
-                    var url = apiBaseUrl + 'eventinfo/signups/' + contests[contest].id + '/' + select;
+                    var url = apiBaseUrl + 'eventinfo/signups/' + contests[contest].id + '/' + select + lang;
                     loadJSON(url, function (data) {
                         var partner, i = data.length;
                         while (i--) {
@@ -341,7 +343,7 @@ var defer, ieVersion, loadJson, dcApi, tests_test;
              * @returns Promise Object
              */
             requestEventSignups = function () {
-                var d = defer(), url = apiBaseUrl + 'eventinfo/' + id.toString() + '/signups';
+                var d = defer(), url = apiBaseUrl + 'eventinfo/' + id.toString() + '/signups' + lang;
                 loadJSON(url, function (data) {
                     var names, i = data.length;
                     while (i--) {
